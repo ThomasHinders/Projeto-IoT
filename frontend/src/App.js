@@ -5,24 +5,30 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const App = () => {
   const [data, setData] = useState([]);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/api/data');
+      setData(response.data.feeds);
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get('http://localhost:5000/api/data');
-      setData(result.data);
-    };
     fetchData();
   }, []);
 
   return (
     <div className="container">
-      <h1 className="my-4">Monitoramento do Arduino</h1>
+      <h1>Dashboard de Monitoramento</h1>
       <div className="row">
-        {data.map((item, index) => (
-          <div key={index} className="col-md-4">
+        {data.map((feed, index) => (
+          <div className="col-md-4" key={index}>
             <div className="card mb-4">
               <div className="card-body">
-                <h5 className="card-title">Leitura: {item.value}</h5>
-                <p className="card-text">Timestamp: {new Date(item.timestamp).toLocaleString()}</p>
+                <h5 className="card-title">Feed {index + 1}</h5>
+                <p className="card-text">Campo 1: {feed.field1}</p>
+                <p className="card-text">Criado em: {feed.created_at}</p>
               </div>
             </div>
           </div>
